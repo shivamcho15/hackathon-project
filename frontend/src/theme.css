@@ -50,3 +50,12 @@ body{background:var(--bg);color:var(--text);font:var(--body)/1.4 -apple-system,B
   justify-content:center;flex-direction:column;z-index:50}
 .count{font-size:200px;font-weight:700;line-height:1}
 .empty{color:var(--muted);font-size:var(--caption)}
+
+/* Buildings on the Site screen lean at their own rate. --amp is unitless degrees,
+   --dur the displayed cycle. transform-origin is the base, so they pivot on the
+   ground rather than sliding along it. */
+@keyframes sway{
+  0%,100%{transform:skewX(calc(var(--amp) * -1deg))}
+  50%{transform:skewX(calc(var(--amp) * 1deg))}
+}
+.sway{transform-origin:bottom center;animation:sway var(--dur) ease-in-out infinite}

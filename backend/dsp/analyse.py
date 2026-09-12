@@ -30,6 +30,13 @@ class Result:
     confidence_flags: list = field(default_factory=list)
     source: str = "unknown"
     fs_hz: float = None
+    # Calibration only — echoed back so the row is self-contained and the Validation
+    # screen can match a run to the overhang it was recorded at.
+    predicted_frequency_hz: float = None
+    beam_overhang_m: float = None
+    beam_width_m: float = None
+    beam_thickness_m: float = None
+    beam_tip_mass_kg: float = None
     abort_reason: str = None
     dict = asdict
 
@@ -149,17 +156,6 @@ def analyse(batches, times, mode="building", structural_type=None,
     if D.decay_ratio(s_top, fs) < config.DECAY_RATIO_MIN:
         r.confidence = "poor"
         r.confidence_flags = flags + ["no_decay"]
-        return r
-
-    # Two independent estimators disagreeing by this much means no coherent mode was
-    # measured — the case a broadband noise burst produces. It clears prominence and
-    # it clears SNR (a burst IS louder than the baseline), so those gates cannot
-    # catch it; only a second, independent view of the same window can. Declining to
-    # report is not "overriding" the FFT peak (I10) — nothing is substituted for it.
-    if (f_check is not None and peak["f"] > 0
-            and abs(f_check - peak["f"]) / peak["f"] > config.ESTIMATOR_REJECT):
-        r.confidence = "poor"
-        r.confidence_flags = flags + ["no_coherent_mode"]
         return r
 
     r.frequency_hz = round(peak["f"], 4)

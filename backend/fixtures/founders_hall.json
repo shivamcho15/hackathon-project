@@ -741,8 +741,12 @@
       ]
     ],
     "source_way_id": 222831279,
-    "address_matched": true
+    "address_matched": true,
+    "name": "Founders Hall",
+    "year_built": 2022,
+    "kind": "university"
   },
   "tier": "fixture",
-  "fetched_at": "2026-09-12T08:53:12Z"
+  "fetched_at": "2026-09-12T08:53:12Z",
+  "site_class_used": "C"
 }

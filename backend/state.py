@@ -229,7 +229,12 @@ class Slots:
         self.live = result
         if result.get("frequency_hz") is None or result.get("mode") == "calibration":
             return False          # calibration touches neither slot
-        if site_location is not None and result.get("location") != site_location:
+        # Promote ONLY on a match. `site_location` is None whenever the loaded site
+        # has no measurement on file — a judge-typed address — and None is not a
+        # match, so nothing auto-promotes against it. An earlier version skipped the
+        # check when it was None, which promoted every result and would have let a
+        # judge's address quietly take over the building the story is built on.
+        if result.get("location") != site_location:
             return False
         self.pinned = result
         return True

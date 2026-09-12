@@ -80,3 +80,59 @@ def test_P5_founders_hall_lands_on_the_plateau():
     assert c["measured_period_s"] == pytest.approx(0.309, abs=1e-3)
     assert c["plateau_t0_s"] <= c["measured_period_s"] <= c["plateau_ts_s"]
     assert c["band"] == "red"
+
+
+def test_promotion_and_banner_logic_are_the_same_rule():
+    """A tabletop stomp must not overwrite the building measurement that Verdict,
+    3D and Retrofit render — and when the loaded site has no measurement on file,
+    the banner must fire rather than silently plotting one building on another."""
+    from backend.state import Slots
+    s = Slots()
+    s.pinned = {"location": "founders_hall", "frequency_hz": 3.24, "mode": "building"}
+    table = {"location": "expo_table", "frequency_hz": 3.9, "mode": "building"}
+
+    assert s.write(table, "founders_hall") is False      # live updates, pinned does not
+    assert s.live is table and s.pinned["location"] == "founders_hall"
+
+    good = {"location": "founders_hall", "frequency_hz": 3.31, "mode": "building"}
+    assert s.write(good, "founders_hall") is True
+    assert s.pinned is good
+
+    # A judge-typed address has no location key, so nothing auto-promotes to it.
+    assert s.write({"location": "founders_hall", "frequency_hz": 3.3,
+                    "mode": "building"}, None) is False
+    # A failed measurement never touches pinned, whatever the site.
+    assert s.write({"location": "founders_hall", "frequency_hz": None,
+                    "mode": "building"}, "founders_hall") is False
+    assert s.pinned is good
+    # Calibration writes neither slot's pinned: a 1.6 Hz ruler is not a building.
+    assert s.write({"location": None, "frequency_hz": 1.6,
+                    "mode": "calibration"}, "founders_hall") is False
+    assert s.pinned is good
+
+
+def test_verdict_does_not_call_a_modern_building_dangerous():
+    """The old screen led with "100% OF MAXIMUM · RED" and the Mexico City collapse
+    for Founders Hall — a 2022 building on firm ground whose period sits on the
+    design plateau, which is the EXPECTED case and exactly what it was designed for.
+    A resonance match is one input, not a safety verdict."""
+    from backend import hazard
+    sp = dict(sds=1.03, sd1=0.56, t0=0.109, ts=0.546, tl=6)
+
+    founders = hazard.assess(sp, "C", "very low", 2022, 2.24)
+    assert founders["in_band"] is True          # the match is real...
+    assert founders["level"] == "good"          # ...and still not a problem
+    assert "fine" in founders["headline"].lower()
+
+    # The factors that genuinely drive vulnerability must move the answer.
+    old_soft = hazard.assess(sp, "E", "high", 1925, 3.0)
+    assert old_soft["level"] == "watch"
+    assert old_soft["score"] > founders["score"]
+
+    # Age alone, on good ground, is enough to warrant a look.
+    assert hazard.assess(sp, "C", "very low", 1955, 2.24)["level"] != "good"
+
+    # Nothing may claim collapse, anywhere in the output.
+    for a in (founders, old_soft):
+        blob = " ".join([a["headline"], a["sub"]] + [f[2] for f in a["factors"]]).lower()
+        assert "collapse" not in blob and "mexico" not in blob

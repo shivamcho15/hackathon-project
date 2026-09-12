@@ -5,3 +5,8 @@ secrets.h
 build/
 build_*/
 *.log
+
+# ...but recordings ARE deliverables, not build output. The blanket *.log rule above
+# meant the floor-1 recording had to be force-added, which is a trap waiting to
+# silently drop a measurement someone walked five floors to collect.
+!recordings/**/*.log

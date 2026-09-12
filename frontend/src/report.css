@@ -1,0 +1,239 @@
+/* report.css — the screening report sheet.
+ *
+ * Deliberately NOT the app's dark instrument theme. This is the one surface that
+ * leaves the table: it is paper, and it has to survive being printed in grayscale
+ * and read by a structural engineer who never saw the screen. So: white stock,
+ * serif prose, hairline rules, monochrome except the single status mark in §4,
+ * and no rounded corners anywhere. The furniture (report number, sheet x of y,
+ * numbered sections, TABLE n / FIGURE n, footnoted references) is the point —
+ * it is what makes an engineer read it as a deliverable rather than a printout.
+ *
+ * Printing works by the visibility trick rather than display:none: the app shell
+ * stays in the layout but is made invisible, and the sheet is lifted to the page
+ * origin. display:none on an ancestor would take the report with it.
+ */
+
+.qa-report {
+  --ink: #14181C;          /* near-black; pure #000 prints heavy and reads harsh  */
+  --ink-mid: #4A545E;
+  --ink-light: #7C8892;
+  --rule: #C3CAD1;
+  --hair: #E2E6EA;
+  --paper: #FFFFFF;
+  --stock: #F4F2ED;        /* the desk the sheets sit on, screen only            */
+  --flag-red: #B4232B;
+  --flag-amber: #9A6A08;
+  --flag-green: #1F6B3A;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "SFMono-Regular", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+
+  background: var(--stock);
+  color: var(--ink);
+  font-family: var(--serif);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 22px 0 60px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- the sheet ---------------------------------------------------------- */
+.qa-sheet {
+  width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto 22px;
+  padding: 0.44in 0.62in 0.32in;
+  background: var(--paper);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .18), 0 8px 26px rgba(0, 0, 0, .13);
+  display: flex;
+  flex-direction: column;
+  font-size: 8.5pt;
+  line-height: 1.28;
+}
+
+/* ---- masthead ----------------------------------------------------------- */
+.qa-mast { display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 2.25px solid var(--ink); padding-bottom: 5px; }
+.qa-mark { font-family: var(--sans); font-weight: 700; font-size: 14.5pt;
+  letter-spacing: .015em; line-height: 1; }
+.qa-mark span { font-weight: 400; color: var(--ink-mid); }
+.qa-mast-sub { font-family: var(--sans); font-size: 6.6pt; letter-spacing: .17em;
+  text-transform: uppercase; color: var(--ink-mid); margin-top: 3px; }
+.qa-meta { text-align: right; font-family: var(--mono); font-size: 7.1pt;
+  line-height: 1.62; color: var(--ink-mid); }
+.qa-meta b { color: var(--ink); font-weight: 600; }
+
+/* ---- titles ------------------------------------------------------------- */
+.qa-title { font-family: var(--sans); font-size: 15pt; font-weight: 700;
+  letter-spacing: -.012em; margin: 9px 0 1px; }
+.qa-subtitle { font-family: var(--sans); font-size: 7.4pt; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--ink-mid);
+  border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
+
+.qa-h { font-family: var(--sans); font-size: 8.4pt; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; margin: 10px 0 4px;
+  padding-bottom: 3px; border-bottom: 1px solid var(--ink); }
+.qa-h .n { color: var(--ink-light); margin-right: 8px; font-weight: 400; }
+.qa-h-sub { font-family: var(--sans); font-size: 7.6pt; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; margin: 11px 0 3px; }
+
+/* ---- identification grid ------------------------------------------------ */
+.qa-idgrid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; }
+/* margin:0 is load-bearing — <dl> carries a 1em UA margin top and bottom, which on a
+   twelve-row grid silently added better than an inch of height and pushed the sheet
+   onto a second printed page. */
+.qa-id { display: flex; justify-content: space-between; gap: 10px; margin: 0;
+  border-bottom: 1px dotted var(--rule); padding: 2.5px 0; }
+.qa-id dt { font-family: var(--sans); font-size: 6.9pt; letter-spacing: .085em;
+  text-transform: uppercase; color: var(--ink-mid); padding-top: 1.2px;
+  white-space: nowrap; }
+.qa-id dd { margin: 0; text-align: right; font-size: 8.2pt; }
+.qa-id dd.num { font-family: var(--mono); font-size: 7.6pt; }
+.qa-unk { color: var(--ink-light); font-style: italic; font-size: 8.4pt; }
+
+/* ---- tables ------------------------------------------------------------- */
+.qa-tbl { width: 100%; border-collapse: collapse; margin: 3px 0 2px;
+  font-size: 7.9pt; }
+.qa-tbl caption { caption-side: top; text-align: left; font-family: var(--sans);
+  font-size: 6.9pt; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-mid); padding-bottom: 4px; }
+.qa-tbl th { font-family: var(--sans); font-size: 6.8pt; letter-spacing: .085em;
+  text-transform: uppercase; text-align: left; font-weight: 700;
+  border-bottom: 1.2px solid var(--ink); padding: 4px 8px 3px 0; vertical-align: bottom; }
+.qa-tbl td { border-bottom: 1px solid var(--hair); padding: 2.6px 7px 2.6px 0;
+  vertical-align: top; }
+.qa-tbl tr:last-child td { border-bottom: 1px solid var(--rule); }
+/* A right-aligned numeric column that is NOT the last one has to keep its gutter, or
+   the value butts straight into the next column's label ("1.03 gMapped MCE"). Only
+   the final column may run to the table edge. */
+.qa-tbl .num, .qa-tbl th.num { font-family: var(--mono); font-size: 7.5pt;
+  text-align: right; padding-right: 20px; white-space: nowrap; }
+.qa-tbl th.num { font-family: var(--sans); }
+.qa-tbl .num:last-child, .qa-tbl th.num:last-child { padding-right: 0; }
+.qa-tbl .idx { font-family: var(--mono); font-size: 7.6pt; color: var(--ink-light);
+  width: 20px; }
+
+/* ---- findings ----------------------------------------------------------- */
+.qa-find { display: grid; grid-template-columns: 20px 1fr; column-gap: 8px;
+  margin: 4px 0; break-inside: avoid; }
+.qa-find-n { font-family: var(--mono); font-size: 10pt; font-weight: 600;
+  color: var(--ink); border-top: 2px solid var(--ink); padding-top: 4px; }
+.qa-find-b { border-top: 1px solid var(--rule); padding-top: 4px; }
+.qa-find-t { font-family: var(--sans); font-size: 8.4pt; font-weight: 700;
+  display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.qa-find-p { margin: 3px 0 0; }
+.qa-plain { color: var(--ink-mid); font-style: italic; }
+.qa-figures { font-family: var(--mono); font-size: 7.4pt; margin: 3px 0 0;
+  padding: 3px 8px; background: #F7F8F9; border-left: 2.5px solid var(--ink); }
+
+.qa-stat { font-family: var(--sans); font-size: 6.8pt; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+  padding: 1.5px 6px; border: 1px solid currentColor; }
+.qa-stat[data-f="red"] { color: var(--flag-red); }
+.qa-stat[data-f="amber"] { color: var(--flag-amber); }
+.qa-stat[data-f="green"], .qa-stat[data-f="none"] { color: var(--flag-green); }
+.qa-stat[data-f="info"] { color: var(--ink-mid); }
+
+/* ---- the decision box (§4) --------------------------------------------- */
+.qa-box { border: 2.25px solid var(--ink); padding: 8px 11px 9px; margin-top: 5px;
+  break-inside: avoid; }
+.qa-box-h { font-family: var(--sans); font-size: 7.4pt; font-weight: 700;
+  letter-spacing: .13em; text-transform: uppercase; margin-bottom: 8px; }
+.qa-opt { display: grid; grid-template-columns: 16px 1fr; column-gap: 8px;
+  padding: 4px 0; border-top: 1px solid var(--hair); align-items: start; }
+.qa-opt:first-of-type { border-top: none; }
+.qa-tick { width: 12.5px; height: 12.5px; border: 1.4px solid var(--ink);
+  margin-top: 1.5px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans); font-size: 10px; font-weight: 700; line-height: 1; }
+.qa-opt[data-on="1"] .qa-tick { background: var(--ink); color: #fff; }
+.qa-opt[data-on="0"] .qa-lab { color: var(--ink-light); }
+.qa-lab { font-size: 8.4pt; }
+.qa-opt[data-on="1"] .qa-lab b { font-family: var(--sans); font-size: 8.8pt; }
+.qa-why { display: block; color: var(--ink-mid); font-size: 7.7pt; margin-top: 1px; }
+
+/* ---- can / cannot ------------------------------------------------------- */
+.qa-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 4px; }
+.qa-two > div { padding: 5px 11px 6px; }
+.qa-two > div:first-child { border-right: 1px solid var(--rule); padding-left: 0; }
+.qa-two h4 { font-family: var(--sans); font-size: 7.2pt; letter-spacing: .1em;
+  text-transform: uppercase; margin: 0 0 5px; font-weight: 700; }
+.qa-two ul { margin: 0; padding-left: 13px; }
+.qa-two li { margin-bottom: 1.5px; }
+
+/* ---- checklist ---------------------------------------------------------- */
+.qa-check { display: grid; grid-template-columns: 14px 1fr auto; column-gap: 8px;
+  padding: 2.8px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+.qa-check-box { width: 10.5px; height: 10.5px; border: 1.2px solid var(--ink-mid);
+  align-self: start; margin-top: 2.5px; }
+.qa-pri { font-family: var(--sans); font-size: 6.4pt; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink-mid); white-space: nowrap;
+  border: 1px solid var(--hair); padding: 1px 5px; }
+.qa-pri[data-p="1"] { color: var(--ink); border-color: var(--ink-mid); font-weight: 700; }
+
+/* ---- prose, notes, footnotes ------------------------------------------- */
+.qa-p { margin: 3.5px 0; }
+.qa-note { font-size: 7.7pt; color: var(--ink-mid); margin: 3.5px 0; }
+.qa-fn { vertical-align: super; font-size: 6.6pt; font-family: var(--sans);
+  color: var(--ink-mid); margin-left: 1px; }
+.qa-refs { list-style: none; margin: 3px 0 0; padding: 0; font-size: 7.3pt;
+  color: var(--ink-mid); }
+.qa-refs li { display: grid; grid-template-columns: 16px 1fr; column-gap: 6px;
+  padding: 1.6px 0; border-bottom: 1px solid var(--hair); }
+.qa-refs .m { font-family: var(--sans); font-size: 6.6pt; padding-top: 1.5px; }
+.qa-refs i { color: var(--ink); font-style: italic; }
+
+/* ---- sheet foot --------------------------------------------------------- */
+.qa-foot { margin-top: auto; padding-top: 7px; border-top: 1px solid var(--rule);
+  display: flex; justify-content: space-between; gap: 18px; align-items: flex-end;
+  font-family: var(--sans); font-size: 6.5pt; letter-spacing: .035em;
+  color: var(--ink-light); line-height: 1.5; }
+.qa-foot b { color: var(--ink-mid); font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; }
+.qa-foot-r { text-align: right; white-space: nowrap; font-family: var(--mono);
+  font-size: 6.8pt; }
+
+/* ---- signature ---------------------------------------------------------- */
+.qa-sig { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px; }
+.qa-sig div { border-top: 1px solid var(--ink); padding-top: 4px;
+  font-family: var(--sans); font-size: 6.8pt; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink-mid); }
+.qa-sig-fill { font-family: var(--serif); font-size: 9pt; letter-spacing: 0;
+  text-transform: none; color: var(--ink); margin-bottom: 3px; }
+
+/* ---- screen-only controls ---------------------------------------------- */
+.qa-bar { width: 8.5in; margin: 0 auto 14px; display: flex; align-items: center;
+  gap: 10px; font-family: var(--sans); }
+.qa-bar-t { font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: #6B7681; flex: 1; }
+.qa-btn { font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase; padding: 9px 15px;
+  border: 1.4px solid var(--ink); background: var(--ink); color: #fff;
+  cursor: pointer; }
+.qa-btn[data-ghost="1"] { background: transparent; color: var(--ink); }
+
+/* ---- print -------------------------------------------------------------- */
+@page { size: letter portrait; margin: 0; }
+
+@media print {
+  html, body, #root { height: auto !important; overflow: visible !important;
+    background: #fff !important; }
+  body * { visibility: hidden !important; }
+  .qa-report, .qa-report * { visibility: visible !important; }
+  /* The shell clips its panes on screen so a scrolling screen cannot spill into the
+     rail. Absolutely positioning the sheet escapes that, but only because .content
+     is statically positioned; relaxing the overflow here makes it not depend on that. */
+  .shell, .content { overflow: visible !important; height: auto !important; }
+  .qa-report { position: absolute; inset: 0 auto auto 0; width: 100%;
+    padding: 0 !important; margin: 0 !important; background: #fff !important;
+    overflow: visible !important; height: auto !important; }
+  .qa-bar { display: none !important; }
+  .qa-sheet { width: 100%; min-height: 0; margin: 0; box-shadow: none;
+    padding: 0.44in 0.62in 0.32in; break-after: page; }
+  .qa-sheet:last-child { break-after: auto; }
+  /* Grayscale printers flatten the status colours to mud; keep the rules and the
+     filled tick doing the work and let colour be a bonus where it survives. */
+  .qa-figures { background: transparent; border-left-width: 2px; }
+  .qa-report { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

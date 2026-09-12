@@ -58,4 +58,13 @@ def load_pinned():
     if rows:
         return max(rows, key=lambda r: r.get("recorded_at", ""))
     f = config.FIXTURES / "founders_hall_measurement.json"
-    return json.loads(f.read_text()) if f.exists() else None
+    if f.exists():
+        return json.loads(f.read_text())
+    # Last resort: analyse the committed dev recording. SIMULATED, and it says so —
+    # provenance comes from its hello line like any other source, so it lights the
+    # SIM badge and cannot be mistaken for a measurement of a real building.
+    try:
+        from .recordings import load_recording
+        return load_recording()
+    except Exception:
+        return None

@@ -3,6 +3,8 @@ let state = {
   pinned: null, live: null, comparison: null, site: null, nodes: [], offline: false,
   known_locations: [], session: null, sessionState: "idle",
   trace: { top: [], ground: [] }, view: 1, overlay: false, location: "expo_table",
+  bannerDismissed: false, attract: false, attractLocked: false,
+  gated: true, location_key: null,   // nothing is reachable until an address is entered
 };
 const subs = new Set();
 export const get = () => state;

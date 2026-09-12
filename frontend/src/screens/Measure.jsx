@@ -3,6 +3,7 @@ import LiveTrace from "../charts/LiveTrace.jsx";
 import SpectrumChart from "../charts/SpectrumChart.jsx";
 import { set } from "../store.js";
 import { startSession, measurements } from "../api.js";
+import { PLAIN, Hint } from "./Explain.jsx";
 
 const FLAG_TEXT = {
   low_snr: "weak signal", low_prominence: "no clear peak", possible_harmonic: "possible harmonic",
@@ -35,9 +36,9 @@ export default function Measure({ s }) {
   }, [busy]);
 
   useEffect(() => {
-    if (!busy) measurements(s.location).then((d) =>
+    if (!busy && s.location_key) measurements(s.location_key).then((d) =>
       setRuns((d.measurements || []).map((m) => m.frequency_hz).filter(Boolean).slice(-5)));
-  }, [busy, s.location, r]);
+  }, [busy, s.location_key, r]);
 
   const sess = s.session;
   const counting = sess && now < sess.stomp_cue_at;
@@ -89,27 +90,49 @@ export default function Measure({ s }) {
               </div>
               {r.frequency_uncertainty_hz != null &&
                 <div className="sub">± {r.frequency_uncertainty_hz.toFixed(2)}</div>}
+              <Hint>{PLAIN.frequency}</Hint>
               <div style={{ marginTop: 8, color: "var(--muted)", fontSize: 22 }}>
                 {DOTS[r.confidence]} {r.confidence}
               </div>
               <div style={{ marginTop: 14 }}>
-                {r.period_s != null && <div className="kv"><span>Period</span><span>{r.period_s.toFixed(3)} s</span></div>}
-                {r.damping_ratio != null && <div className="kv"><span>Damping</span><span>{(r.damping_ratio * 100).toFixed(1)} %</span></div>}
-                {r.amplification != null && <div className="kv"><span>Amplification</span><span>{r.amplification.toFixed(1)}×</span></div>}
-                {r.coherence != null && <div className="kv"><span>Coherence</span><span>{r.coherence.toFixed(2)}</span></div>}
+                {r.period_s != null && <div className="kv" title={PLAIN.period}><span>Period</span><span>{r.period_s.toFixed(3)} s</span></div>}
+                {r.damping_ratio != null && <div className="kv" title={PLAIN.damping}><span>Damping</span><span>{(r.damping_ratio * 100).toFixed(1)} %</span></div>}
+                {r.amplification != null && <div className="kv" title={PLAIN.amplification}><span>Amplification</span><span>{r.amplification.toFixed(1)}×</span></div>}
+                {r.coherence != null && <div className="kv" title={PLAIN.coherence}><span>Coherence</span><span>{r.coherence.toFixed(2)}</span></div>}
                 <div className="kv"><span>Channels</span>
                   <span>{(r.channels_used || []).join(" + ") || "—"} · {r.trials_used} run{r.trials_used === 1 ? "" : "s"}</span></div>
               </div>
             </>
           ) : (
-            <div style={{ marginTop: 14 }}>
-              <div style={{ fontSize: 34, fontWeight: 600 }}>
-                {r ? "No clear peak" : "Ready"}
+            <div style={{ marginTop: 10 }}>
+              <div style={{ fontSize: 30, fontWeight: 600, lineHeight: 1.2 }}>
+                {r ? "No clear peak"
+                   : "No measurement for this address yet"}
               </div>
-              <div className="empty" style={{ marginTop: 10, lineHeight: 1.5 }}>
-                {r ? "We recorded motion but found no clear resonance. Stomp harder, or move the sensor nearer a wall or column."
-                   : "Press S to arm a measurement."}
-              </div>
+              {r ? (
+                <div className="empty" style={{ marginTop: 10, lineHeight: 1.5 }}>
+                  We recorded motion but found no clear resonance. Stomp harder, or
+                  move the sensor nearer a wall or column.
+                </div>
+              ) : (
+                /* First-run instructions. Every other address starts here, so this
+                   is the most-read text in the app after the hero number. */
+                <div style={{ marginTop: 12, lineHeight: 1.6 }}>
+                  <div className="empty">Three steps, about twenty seconds:</div>
+                  <ol style={{ margin: "10px 0 0", paddingLeft: 22, color: "var(--muted)",
+                               fontSize: "var(--caption)" }}>
+                    <li><b style={{ color: "var(--text)" }}>Put the sensor on the floor</b> — against
+                      a wall or a column, not the middle of the room.</li>
+                    <li><b style={{ color: "var(--text)" }}>Press the button below.</b> You get a
+                      3-second countdown, then the screen says STOMP.</li>
+                    <li><b style={{ color: "var(--text)" }}>Stomp hard, once</b>, right next to the
+                      sensor — then stand still while it records.</li>
+                  </ol>
+                  <div className="empty" style={{ marginTop: 12 }}>
+                    The building rings like a struck bell. We measure how fast it rings.
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <div style={{ marginTop: 12 }}>
@@ -119,21 +142,25 @@ export default function Measure({ s }) {
         </div>
 
         <div className="card">
-          <div className="label" style={{ marginBottom: 8 }}>location</div>
-          <div className="seg">
-            {["expo_table", "founders_hall", "tower_rig"].map((k) => (
-              <button key={k} data-on={s.location === k ? "1" : "0"}
-                      onClick={() => set({ location: k })}>{k.replace("_", " ")}</button>
-            ))}
-          </div>
-          <button className="btn" style={{ width: "100%", marginTop: 12 }} disabled={busy || !canArm}
-            onClick={() => startSession({ mode: "building", location: s.location,
-                                          address: s.site?.address ?? null })}>
+          {/* One control. The backend derives which building this belongs to from
+              the address already on screen, so there is nothing to choose here. */}
+          <button className="btn" disabled={busy || !canArm}
+            style={{ width: "100%", fontSize: 26, padding: "20px 22px",
+                     ...(busy || !canArm ? { background: "#141C25", color: "#5A6875",
+                                             borderColor: "#233040" } : {}) }}
+            onClick={() => startSession({ mode: "building" })}>
             {busy ? (counting ? "STOMP IN " + secs
-                     : `recording… ${Math.ceil((1 - pct) * 12)}s`) : "▶  START MEASUREMENT  (S)"}
+                     : `recording… ${Math.ceil((1 - pct) * 12)}s`)
+                   : !canArm ? "waiting for a sensor…"
+                   : r?.frequency_hz != null ? "▶  LISTEN AGAIN"
+                   : "▶  START LISTENING"}
           </button>
-          {!canArm && <div className="empty" style={{ marginTop: 8 }}>
-            No sensor streaming — start a node, or check the hotspot and port 48266.</div>}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+            <i className="dot" data-s={canArm ? "streaming" : "absent"} />
+            <span className="empty">{canArm
+              ? "Sensor connected — ready when you are."
+              : "Waiting for a sensor. Plug one in, or check the hotspot and port 48266."}</span>
+          </div>
           {busy && !counting && (
             <div style={{ height: 6, background: "var(--border)", borderRadius: 3, marginTop: 10 }}>
               <div style={{ height: "100%", width: `${pct * 100}%`, background: "var(--top)", borderRadius: 3 }} />

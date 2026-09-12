@@ -60,13 +60,31 @@ SEARCH_HZ_BUILDING = (0.5, 15.0)
 SEARCH_HZ_CALIBRATION = (0.5, 20.0)
 ZERO_PAD_N = 8192
 ENVELOPE_WINDOW_S = 0.25
-ONSET_THRESHOLD_MULT = 6.0    # envelope must exceed 6x baseline RMS
+ONSET_THRESHOLD_MULT = 4.0    # envelope must exceed 4x the baseline RMS.
+                              # Lowered from 6.0 (which the plan chose as "say, 6x",
+                              # never derived). This gate LOCATES the stomp; it does
+                              # not judge whether one happened — prominence, the SNR
+                              # gate and the decay gate do that, and they are
+                              # unaffected. Verified: quiet and noisy still return
+                              # null across 8 seeds each at 3x, so 4x costs no
+                              # rejection power. A real stomp is ~250x the noise
+                              # floor (3 m/s2 against 0.012 RMS), so the exact value
+                              # is irrelevant for real data; it only matters for the
+                              # committed dev dataset, whose events are 4.5-5.5x.
 PROMINENCE_MULT = 3.0         # >= 3x in-band median
 PROMINENCE_MULT_RELAXED = 1.5 # for the harmonic-partner search
 SNR_MIN_DB = 6.0
 HARMONIC_TOLERANCE = 0.05     # +/-5% of 2x or 3x
 HARMONIC_MIN_RATIO = 0.40     # partner must be >=40% of the main peak (see confidence.py)
-ESTIMATOR_REJECT = 0.25       # gross FFT-vs-ringdown disagreement => no coherent mode
+# REMOVED: a gross FFT-vs-ringdown disagreement used to null the result. That
+# violated I10 — no anomaly check may change which frequency is reported — and it
+# was only ever added to make R2 pass. The decay gate does that job properly
+# (verified: quiet/noisy still return null across 10 seeds with the veto gone),
+# and the ringdown estimator is too noisy at low SNR to be given veto power: on the
+# committed dev dataset it returns 4.08 Hz against a clean 2.246 Hz peak standing
+# 18.9x above the in-band median, and would have rejected a good measurement.
+# The cross-check remains as `estimator_disagreement` — a flag, which is all the
+# plan ever specified.
 DECAY_RATIO_MIN = 2.0         # early/late band energy: a ringdown decays, noise does not
 NEAR_CEILING_HZ = 2.0
 PLAUSIBILITY_FACTOR = 3.0     # T ~ 0.1N, flag only beyond 3x
@@ -104,7 +122,9 @@ USGS_RISK_CATEGORY = "II"
 TIMEOUT_GEOCODE = 3.0
 TIMEOUT_DNR = 3.0
 TIMEOUT_USGS = 4.0
-TIMEOUT_OVERPASS = 8.0
+TIMEOUT_OVERPASS = 15.0   # measured: the public instance needs >8s for around:100.
+                          # It is OFF the critical path (parallel with USGS), and a
+                          # miss only costs the 3D screen its real footprint.
 OVERPASS_RADIUS_M = 100
 
 # --- provenance (§4.2, I9) ---------------------------------------------------
