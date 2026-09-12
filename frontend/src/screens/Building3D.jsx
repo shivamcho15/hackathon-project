@@ -3,12 +3,20 @@ import { makeScene } from "../three/scene.js";
 import { buildBuilding, applyDisplacement } from "../three/building.js";
 import { stiffnessFor, stiffnessMatrix, modeShape, driftProfile, criticalFloor } from "../physics/model.js";
 import { magnification, displacement, DAMPING_DEFAULT } from "../physics/modal.js";
-import { Hint } from "./Explain.jsx";
 import { intensityFor } from "../shaking.js";
-import FrequencyScale from "../charts/FrequencyScale.jsx";
 
 const TYPES = ["wood", "urm", "concrete", "steel"];
-const EXAGGERATION = 200;          // stated on screen, always
+const EXAGGERATION = 200;          // stated on screen twice, deliberately
+
+/* One short line under a control, never a paragraph. The right-hand column used to
+   carry four explanatory paragraphs and a second copy of the frequency scale that
+   the Site screen now owns; at a table nobody reads the fifth line, they read the
+   first. Anything that needed more than a line either moved to the screen that owns
+   it or was cut. */
+function Note({ children }) {
+  return <div style={{ marginTop: 6, fontSize: 14, lineHeight: 1.4,
+                       color: "var(--muted)" }}>{children}</div>;
+}
 
 export default function Building3D({ s }) {
   const canvas = useRef(null);
@@ -95,7 +103,7 @@ export default function Building3D({ s }) {
 
   return (
     <div style={{ display: "flex", gap: 14, height: "100%" }}>
-      <div className="card" style={{ flex: 1.6, minWidth: 0, padding: 0, position: "relative",
+      <div className="card" style={{ flex: 2, minWidth: 0, padding: 0, position: "relative",
                                      overflow: "hidden" }}>
         <canvas ref={canvas} style={{ width: "100%", height: "100%", display: "block" }} />
         <div style={{ position: "absolute", left: 14, bottom: 12 }}>
@@ -108,9 +116,16 @@ export default function Building3D({ s }) {
             {fallback ? " · default rectangle, no footprint found"
                       : ` · real ${bf?.geometry?.length}-point outline from OpenStreetMap`}
           </div>
-          <div className="empty" style={{ marginTop: 2 }}>
-            sway exaggerated ~{EXAGGERATION}× to be visible · drag to turn
-          </div>
+          <div className="empty" style={{ marginTop: 2 }}>drag to turn</div>
+        </div>
+        {/* Real sway at this scale is a fraction of a millimetre — invisible. Saying
+            so in the smallest type on the screen was underselling our own honesty,
+            so it is a badge now, permanently on the render it describes. */}
+        <div style={{ position: "absolute", left: 14, top: 12, padding: "7px 13px",
+                      borderRadius: 8, border: "1px solid var(--top)",
+                      background: "rgba(56,189,248,.12)", color: "var(--top)",
+                      fontSize: 15, fontWeight: 700, letterSpacing: ".04em" }}>
+          SWAY SHOWN {EXAGGERATION}× LARGER THAN REAL
         </div>
         {atRes && <div style={{ position: "absolute", right: 14, top: 12, padding: "8px 14px",
           borderRadius: 8, background: "var(--amber)", color: "#0B0F14", fontWeight: 700 }}>
@@ -125,15 +140,26 @@ export default function Building3D({ s }) {
             {fDrive.toFixed(2)} Hz</div>
           <input type="range" min={0.5} max={15} step={0.01} value={fDrive}
                  onChange={(e) => setFDrive(+e.target.value)} style={{ width: "100%" }} />
-          <Hint>Drag to shake the ground at different speeds. The building barely
-            responds until you hit its own rate — then it takes off.</Hint>
-          <div className="kv" style={{ marginTop: 8 }}>
-            <span>movement vs a slow push</span><span>{h.toFixed(1)}×</span></div>
-          <button className="btn" style={{ width: "100%", marginTop: 10, fontSize: "var(--body)" }}
+          <Note>Drag it. Nothing much happens until you hit the building's own rate.</Note>
+          {/* This number IS the screen. It was a 16px key/value row. */}
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 12,
+                        paddingTop: 12, borderTop: "1px solid var(--border)" }}>
+            <span style={{ fontSize: 40, fontWeight: 700, lineHeight: 1,
+                           fontVariantNumeric: "tabular-nums",
+                           color: atRes ? "var(--amber)" : "var(--text)" }}>
+              {h.toFixed(1)}×</span>
+            <span style={{ fontSize: 15, color: "var(--muted)", lineHeight: 1.3 }}>
+              the movement a slow push<br />of the same force would give</span>
+          </div>
+          <Note>On screen that sway is drawn {EXAGGERATION}× larger than life.</Note>
+          <button className="btn" style={{ width: "100%", marginTop: 12, fontSize: "var(--body)" }}
                   onClick={() => measured && setFDrive(model.f1)}>
             snap to measured ({model.f1.toFixed(2)} Hz) · M</button>
-          <div style={{ marginTop: 14 }}>
-            <div className="label">how hard the ground shakes</div>
+        </div>
+
+        <div className="card">
+          <div className="label">how hard the ground shakes</div>
+          <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 6 }}>
               <span style={{ fontSize: 30, fontWeight: 700 }}>{intensity.roman}</span>
               <span style={{ fontSize: 22 }}>{intensity.word}</span>
@@ -142,7 +168,7 @@ export default function Building3D({ s }) {
             </div>
             <input type="range" min={0.02} max={1.3} step={0.01} value={pga}
                    onChange={(e) => setPga(+e.target.value)} style={{ width: "100%" }} />
-            <Hint>{intensity.text}</Hint>
+            <Note>{intensity.text}</Note>
             {design > 0 && (
               <button onClick={() => setPga(design)}
                 style={{ marginTop: 8, background: "none", border: "none", padding: 0,
@@ -150,16 +176,11 @@ export default function Building3D({ s }) {
                          fontSize: "var(--caption)", textDecoration: "underline" }}>
                 jump to this site's design event — {design} g (USGS)
               </button>)}
-            <Hint><b>Intensity, not magnitude.</b> Magnitude describes the earthquake;
-              intensity describes what happens <i>here</i>. A magnitude 9 offshore
-              shakes this address less than a magnitude 6.5 underneath it.</Hint>
+            {/* Kept because an engineer will ask why there is no magnitude on the
+                screen. Cut from three lines to one. */}
+            <Note>Intensity, not magnitude — what happens <i>here</i>, not at the
+              epicentre.</Note>
           </div>
-        </div>
-
-        <div className="card">
-          <div className="label">what sway rates look like</div>
-          <FrequencyScale measured={measured} floors={floors}
-                          t0={s.site?.usgs_spectrum?.t0} ts={s.site?.usgs_spectrum?.ts} />
         </div>
 
         <div className="card">
@@ -177,8 +198,7 @@ export default function Building3D({ s }) {
                       style={{ padding: "4px 8px" }}>{t}</button>))}</span></span></div>
           <div className="kv"><span>weakest connection</span>
             <span>level {model.crit + 1}</span></div>
-          <Hint>The level that bends most when the building sways — where bracing
-            would do the most good.</Hint>
+          <Note>Where it bends most — where bracing would do the most good.</Note>
         </div>
 
       </div>
