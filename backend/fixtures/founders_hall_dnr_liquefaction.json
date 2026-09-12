@@ -1,0 +1,66 @@
+{
+  "_fixture": {
+    "source_api": "WA DNR liquefaction (layer 0)",
+    "fetched_at": "2026-09-12T08:53:12",
+    "fetched_from": "University of Washington WiFi, at the venue",
+    "http_status": 200,
+    "note": "Verbatim live response. CACHING.md Tier 3."
+  },
+  "response": {
+    "displayFieldName": "LIQUEFACTION_SUSCEPT",
+    "fieldAliases": {
+      "OBJECTID": "OBJECTID",
+      "LIQUEFACTION_SUSCEPT_ID": "Liquefaction Susceptibility ID",
+      "LIQUEFACTION_SUSCEPT": "Liquefaction Susceptibility ",
+      "SHAPE.LEN": "SHAPE_Length",
+      "SHAPE.AREA": "SHAPE_Area",
+      "GLOBALID": "GLOBALID"
+    },
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "LIQUEFACTION_SUSCEPT_ID",
+        "type": "esriFieldTypeDouble",
+        "alias": "Liquefaction Susceptibility ID"
+      },
+      {
+        "name": "LIQUEFACTION_SUSCEPT",
+        "type": "esriFieldTypeString",
+        "alias": "Liquefaction Susceptibility ",
+        "length": 18
+      },
+      {
+        "name": "SHAPE.LEN",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE_Length"
+      },
+      {
+        "name": "SHAPE.AREA",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE_Area"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID",
+        "length": 38
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 25129,
+          "LIQUEFACTION_SUSCEPT_ID": 25129.0,
+          "LIQUEFACTION_SUSCEPT": "very low",
+          "SHAPE.LEN": 3657207.81489476,
+          "SHAPE.AREA": 7288524230.57734,
+          "GLOBALID": "{D75110CD-5811-4BFB-AB44-9569EBD5A3B1}"
+        }
+      }
+    ]
+  }
+}

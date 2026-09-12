@@ -1,0 +1,52 @@
+/* §17.2. Dark because the laptop faces outward under conference lighting: it reads
+   better at distance and looks like an instrument rather than a web page. */
+:root{
+  --bg:#0B0F14; --surface:#131A22; --border:#1F2A35;
+  --text:#E8EEF4; --muted:#9BAAB8;
+  --top:#38BDF8; --ground:#A78BFA;
+  /* Reserved for the resonance score ONLY. Nothing else may use these three. */
+  --green:#22C55E; --amber:#F59E0B; --red:#EF4444;
+  --hero:140px; --h1:48px; --h2:28px; --body:20px; --caption:16px; /* 16 is a hard floor */
+}
+*{box-sizing:border-box}
+html,body,#root{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:var(--body)/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;overflow:hidden}
+.shell{display:flex;flex-direction:column;height:100%}
+.strip{height:44px;flex:0 0 44px;display:flex;align-items:center;gap:18px;padding:0 18px;
+  background:var(--surface);border-bottom:1px solid var(--border);font-size:var(--caption)}
+.rail{height:48px;flex:0 0 48px;display:flex;align-items:stretch;background:var(--surface);
+  border-top:1px solid var(--border);font-size:var(--caption)}
+.rail button{flex:1;background:none;border:none;border-right:1px solid var(--border);
+  color:var(--muted);font-size:var(--caption);cursor:pointer;font-family:inherit}
+.rail button[data-on="1"]{color:var(--text);background:#1A2430;box-shadow:inset 0 2px 0 var(--top)}
+.content{flex:1;min-height:0;padding:18px;overflow:hidden}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot[data-s="streaming"]{background:var(--green)}
+.dot[data-s="stale"],.dot[data-s="recovering"],.dot[data-s="handshake"]{background:var(--amber)}
+.dot[data-s="absent"],.dot[data-s="conflict"]{background:var(--red)}
+.node{display:flex;align-items:center;color:var(--muted)}
+.pill{padding:2px 9px;border-radius:10px;border:1px solid var(--border);color:var(--muted);
+  font-size:13px;letter-spacing:.06em}
+.pill[data-warn="1"]{border-color:var(--amber);color:#0B0F14;background:var(--amber);font-weight:700}
+.spacer{flex:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.label{font-size:var(--caption);color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.hero{font-size:var(--hero);line-height:.95;font-variant-numeric:tabular-nums;font-weight:600}
+.sub{font-size:32px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:5px 0;font-size:var(--caption)}
+.kv span:last-child{font-variant-numeric:tabular-nums;color:var(--text)}
+.kv span:first-child{color:var(--muted)}
+.btn{font:600 var(--h2)/1 inherit;padding:16px 22px;border-radius:10px;border:1px solid var(--top);
+  background:var(--top);color:#06121C;cursor:pointer;font-family:inherit}
+.btn:disabled{background:transparent;color:var(--muted);border-color:var(--border);cursor:not-allowed}
+.chip{display:inline-block;padding:3px 9px;margin:3px 5px 0 0;border-radius:6px;
+  background:#1A2430;border:1px solid var(--border);color:var(--muted);font-size:var(--caption)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg button{background:none;border:none;color:var(--muted);padding:8px 14px;font-size:var(--caption);
+  cursor:pointer;font-family:inherit;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:none}
+.seg button[data-on="1"]{background:var(--top);color:#06121C;font-weight:700}
+.overlay{position:fixed;inset:0;background:rgba(11,15,20,.93);display:flex;align-items:center;
+  justify-content:center;flex-direction:column;z-index:50}
+.count{font-size:200px;font-weight:700;line-height:1}
+.empty{color:var(--muted);font-size:var(--caption)}

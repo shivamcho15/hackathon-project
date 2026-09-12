@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+dist/
+.vite/
+.env
+backend/data/*
+!backend/data/.gitkeep
+claude-skills/
+.DS_Store

@@ -1,0 +1,7 @@
+# WiFi credentials - never committed. Copy secrets.h.example to secrets.h.
+secrets.h
+
+# Compiled binaries - any build output dir
+build/
+build_*/
+*.log

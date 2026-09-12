@@ -1,0 +1,25 @@
+{
+  "_fixture": {
+    "source_api": "Census geocoder",
+    "fetched_at": "2026-09-12T08:53:12",
+    "fetched_from": "University of Washington WiFi, at the venue",
+    "http_status": 200,
+    "note": "Verbatim live response. CACHING.md Tier 3."
+  },
+  "response": {
+    "result": {
+      "input": {
+        "address": {
+          "address": "4215 E Stevens Way NE, Seattle, WA 98195"
+        },
+        "benchmark": {
+          "isDefault": true,
+          "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+          "id": "4",
+          "benchmarkName": "Public_AR_Current"
+        }
+      },
+      "addressMatches": []
+    }
+  }
+}

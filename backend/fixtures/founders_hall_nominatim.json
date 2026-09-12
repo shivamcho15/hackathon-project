@@ -1,0 +1,32 @@
+{
+  "_fixture": {
+    "source_api": "Nominatim (fallback)",
+    "fetched_at": "2026-09-12T08:53:12",
+    "fetched_from": "University of Washington WiFi, at the venue",
+    "http_status": 200,
+    "note": "Verbatim live response. CACHING.md Tier 3."
+  },
+  "response": [
+    {
+      "place_id": 325906724,
+      "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+      "osm_type": "way",
+      "osm_id": 222831279,
+      "lat": "47.6588186",
+      "lon": "-122.3070647",
+      "class": "building",
+      "type": "university",
+      "place_rank": 30,
+      "importance": 7.72983901731444e-05,
+      "addresstype": "building",
+      "name": "Founders Hall",
+      "display_name": "Founders Hall, 4215, East Stevens Way Northeast, Greek Row, University Heights, University District, Seattle, King County, Washington, 98116, United States",
+      "boundingbox": [
+        "47.6585273",
+        "47.6591341",
+        "-122.3074798",
+        "-122.3066974"
+      ]
+    }
+  ]
+}

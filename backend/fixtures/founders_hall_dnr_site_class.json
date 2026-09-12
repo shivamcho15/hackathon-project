@@ -1,0 +1,82 @@
+{
+  "_fixture": {
+    "source_api": "WA DNR site class (layer 1)",
+    "fetched_at": "2026-09-12T08:53:12",
+    "fetched_from": "University of Washington WiFi, at the venue",
+    "http_status": 200,
+    "note": "Verbatim live response. CACHING.md Tier 3."
+  },
+  "response": {
+    "displayFieldName": "SEISMIC_SITE_CLASS",
+    "fieldAliases": {
+      "OBJECTID": "OBJECTID",
+      "SEISMIC_SITE_CLASS_ID": "Site Class ID",
+      "SEISMIC_SITE_CLASS_CD": "Site Class Code",
+      "SEISMIC_SITE_CLASS": "Site Class",
+      "SEISMIC_SITE_CLASS_DESC": "Site Class Description",
+      "SHAPE.LEN": "Shape_Length",
+      "SHAPE.AREA": "Shape_Area",
+      "GLOBALID": "GLOBALID"
+    },
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "SEISMIC_SITE_CLASS_ID",
+        "type": "esriFieldTypeDouble",
+        "alias": "Site Class ID"
+      },
+      {
+        "name": "SEISMIC_SITE_CLASS_CD",
+        "type": "esriFieldTypeString",
+        "alias": "Site Class Code",
+        "length": 6
+      },
+      {
+        "name": "SEISMIC_SITE_CLASS",
+        "type": "esriFieldTypeString",
+        "alias": "Site Class",
+        "length": 20
+      },
+      {
+        "name": "SEISMIC_SITE_CLASS_DESC",
+        "type": "esriFieldTypeString",
+        "alias": "Site Class Description",
+        "length": 300
+      },
+      {
+        "name": "SHAPE.LEN",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Length"
+      },
+      {
+        "name": "SHAPE.AREA",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Area"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID",
+        "length": 38
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 11808,
+          "SEISMIC_SITE_CLASS_ID": 11808.0,
+          "SEISMIC_SITE_CLASS_CD": "C",
+          "SEISMIC_SITE_CLASS": "Site class C",
+          "SEISMIC_SITE_CLASS_DESC": "Average shear wave velocity in the upper 100 feet (30 meters) is >1200 to 2500 feet/second (360 to 760 meters/second)",
+          "SHAPE.LEN": 2152601.31080219,
+          "SHAPE.AREA": 4584311058.93543,
+          "GLOBALID": "{E0EC4C7E-4A16-4740-975E-8D1C0A0F51B6}"
+        }
+      }
+    ]
+  }
+}

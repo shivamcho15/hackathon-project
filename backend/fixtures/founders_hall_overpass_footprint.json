@@ -1,0 +1,120 @@
+{
+  "_fixture": {
+    "source_api": "Overpass (building footprint)",
+    "fetched_at": "2026-09-12T08:53:12",
+    "fetched_from": "University of Washington WiFi, at the venue",
+    "http_status": 200,
+    "note": "Verbatim live response. CACHING.md Tier 3."
+  },
+  "response": {
+    "version": 0.6,
+    "generator": "Overpass API 0.7.62.11 87bfad18",
+    "osm3s": {
+      "timestamp_osm_base": "2026-09-12T15:51:21Z",
+      "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+    },
+    "elements": [
+      {
+        "type": "way",
+        "id": 222831279,
+        "bounds": {
+          "minlat": 47.6585273,
+          "minlon": -122.3074798,
+          "maxlat": 47.6591341,
+          "maxlon": -122.3066974
+        },
+        "nodes": [
+          2317747286,
+          2317747274,
+          9870972019,
+          9870972020,
+          9870972021,
+          9870972022,
+          2317747268,
+          9870972025,
+          9870972023,
+          10791175675,
+          10791175678,
+          2317747275,
+          9870972018,
+          2317747286
+        ],
+        "geometry": [
+          {
+            "lat": 47.6591341,
+            "lon": -122.307189
+          },
+          {
+            "lat": 47.6588002,
+            "lon": -122.3066974
+          },
+          {
+            "lat": 47.658681,
+            "lon": -122.3068759
+          },
+          {
+            "lat": 47.6587068,
+            "lon": -122.3069139
+          },
+          {
+            "lat": 47.6586244,
+            "lon": -122.3070373
+          },
+          {
+            "lat": 47.658605,
+            "lon": -122.3070086
+          },
+          {
+            "lat": 47.6585273,
+            "lon": -122.307125
+          },
+          {
+            "lat": 47.6587069,
+            "lon": -122.3073893
+          },
+          {
+            "lat": 47.6587686,
+            "lon": -122.3074798
+          },
+          {
+            "lat": 47.6588607,
+            "lon": -122.3073417
+          },
+          {
+            "lat": 47.6588369,
+            "lon": -122.3073069
+          },
+          {
+            "lat": 47.6589049,
+            "lon": -122.3072051
+          },
+          {
+            "lat": 47.6590151,
+            "lon": -122.3073672
+          },
+          {
+            "lat": 47.6591341,
+            "lon": -122.307189
+          }
+        ],
+        "tags": {
+          "addr:city": "Seattle",
+          "addr:housenumber": "4215",
+          "addr:postcode": "98116",
+          "addr:street": "East Stevens Way Northeast",
+          "building": "university",
+          "building:levels": "5",
+          "name": "Founders Hall",
+          "operator": "University of Washington",
+          "operator:abbr": "UW",
+          "operator:type": "public",
+          "operator:wikidata": "Q219563",
+          "operator:wikipedia": "en:University of Washington",
+          "ref": "FNDR",
+          "source": "King County GIS;data.seattle.gov",
+          "start_date": "2022"
+        }
+      }
+    ]
+  }
+}
